@@ -16,10 +16,10 @@ public class SecurityConfiguration {
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
                 .oauth2Client()
-                    .and()
+                .and()
                 .oauth2Login()
                 .tokenEndpoint()
-                    .and()
+                .and()
                 .userInfoEndpoint();
 
         http
@@ -28,12 +28,14 @@ public class SecurityConfiguration {
 
         http
                 .authorizeHttpRequests()
-                            .requestMatchers("/unauthenticated", "/oauth2/**", "/login/**").permitAll()
-                            .anyRequest()
-                                .fullyAuthenticated()
+                .requestMatchers("/manager/**").hasRole("manager")
+                .requestMatchers("/cashier/**").hasRole("cashier")
+                .requestMatchers("/unauthenticated", "/oauth2/**", "/login/**").permitAll()
+                .anyRequest()
+                .fullyAuthenticated()
                 .and()
-                    .logout()
-                    .logoutSuccessUrl("http://localhost:8080/realms/external/protocol/openid-connect/logout?redirect_uri=http://localhost:8081/");
+                .logout()
+                .logoutSuccessUrl("http://localhost:8080/realms/caisse-enregistreuse/protocol/openid-connect/logout?redirect_uri=http://localhost:8081/");
 
         return http.build();
     }
