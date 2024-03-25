@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+ # frontend:
+ #   build:
+  #    context: ./frontend
+   # ports:
+   #   - "80:80"
+
+  backend:
+    build:
+      context: .
+    ports:
+      - "8088:8088"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/caisse-enregistreuse
+      SPRING_DATASOURCE_USERNAME: caisse-enregistreuse
+      SPRING_DATASOURCE_PASSWORD: ""
+
+  keycloak:
+   image: quay.io/keycloak/keycloak:23.0.6
+   container_name: keycloak
+   ports:
+     - "8880:8880"
+   environment:
+     - KEYCLOAK_USER=admin
+     - KEYCLOAK_PASSWORD=admin
+   #  - PROXY_ADDRESS_FORWARDING=true
+
+  db:
+    image: mysql:8
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: caisse-enregistreuse
+      MYSQL_USER: root
+      MYSQL_PASSWORD: ""
+      MYSQL_ROOT_PASSWORD: ""
